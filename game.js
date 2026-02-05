@@ -13,6 +13,12 @@ let currentLevel = 1;
 let isInvincible = false;
 let invincibilityTimer = 0;
 
+// Kamera
+const camera = {
+    x: 0,
+    y: 0
+};
+
 const scoreElement = document.getElementById('score');
 const heartsElement = document.getElementById('hearts');
 const levelElement = document.getElementById('currentLevel');
@@ -29,8 +35,12 @@ const player = {
     speed: 5,
     jumpPower: 12,
     isJumping: false,
-    onGround: false
+    onGround: false,
+    facingRight: true
 };
+
+// Střely (ohnivé koule)
+let fireballs = [];
 
 // Gravitace
 const gravity = 0.5;
@@ -39,74 +49,138 @@ const gravity = 0.5;
 const keys = {
     a: false,
     d: false,
-    space: false
+    space: false,
+    k: false
 };
 
-// Level 1 data
+// Level 1 data - DELŠÍ MAPA!
 const level1Data = {
+    worldWidth: 3000, // Mnohem širší svět!
     platforms: [
-        { x: 0, y: 550, width: 800, height: 50, color: '#8B4513' },
+        // Spodní dlouhá platforma
+        { x: 0, y: 550, width: 3000, height: 50, color: '#8B4513' },
+        
+        // Začátek
         { x: 200, y: 450, width: 150, height: 20, color: '#8B4513' },
-        { x: 450, y: 350, width: 150, height: 20, color: '#8B4513' },
-        { x: 100, y: 250, width: 120, height: 20, color: '#8B4513' },
-        { x: 600, y: 450, width: 150, height: 20, color: '#8B4513' },
-        { x: 350, y: 150, width: 100, height: 20, color: '#8B4513' }
+        { x: 400, y: 350, width: 150, height: 20, color: '#8B4513' },
+        { x: 600, y: 250, width: 120, height: 20, color: '#8B4513' },
+        
+        // Střední část
+        { x: 850, y: 450, width: 100, height: 20, color: '#8B4513' },
+        { x: 1050, y: 400, width: 150, height: 20, color: '#8B4513' },
+        { x: 1300, y: 300, width: 100, height: 20, color: '#8B4513' },
+        { x: 1500, y: 200, width: 120, height: 20, color: '#8B4513' },
+        { x: 1700, y: 350, width: 150, height: 20, color: '#8B4513' },
+        
+        // Těžká sekce
+        { x: 1950, y: 450, width: 80, height: 20, color: '#8B4513' },
+        { x: 2100, y: 400, width: 80, height: 20, color: '#8B4513' },
+        { x: 2250, y: 350, width: 80, height: 20, color: '#8B4513' },
+        { x: 2400, y: 250, width: 100, height: 20, color: '#8B4513' },
+        
+        // Konec
+        { x: 2600, y: 450, width: 150, height: 20, color: '#8B4513' },
+        { x: 2800, y: 400, width: 150, height: 20, color: '#8B4513' }
     ],
     coins: [
         { x: 250, y: 400, width: 20, height: 20, collected: false },
-        { x: 500, y: 300, width: 20, height: 20, collected: false },
-        { x: 150, y: 200, width: 20, height: 20, collected: false },
-        { x: 650, y: 400, width: 20, height: 20, collected: false },
-        { x: 400, y: 100, width: 20, height: 20, collected: false },
-        { x: 700, y: 500, width: 20, height: 20, collected: false },
-        { x: 50, y: 500, width: 20, height: 20, collected: false }
+        { x: 450, y: 300, width: 20, height: 20, collected: false },
+        { x: 650, y: 200, width: 20, height: 20, collected: false },
+        { x: 900, y: 400, width: 20, height: 20, collected: false },
+        { x: 1100, y: 350, width: 20, height: 20, collected: false },
+        { x: 1350, y: 250, width: 20, height: 20, collected: false },
+        { x: 1550, y: 150, width: 20, height: 20, collected: false },
+        { x: 1750, y: 300, width: 20, height: 20, collected: false },
+        { x: 2000, y: 400, width: 20, height: 20, collected: false },
+        { x: 2150, y: 350, width: 20, height: 20, collected: false },
+        { x: 2300, y: 300, width: 20, height: 20, collected: false },
+        { x: 2450, y: 200, width: 20, height: 20, collected: false },
+        { x: 2650, y: 400, width: 20, height: 20, collected: false },
+        { x: 2850, y: 350, width: 20, height: 20, collected: false }
     ],
     enemies: [
-        { x: 300, y: 420, width: 30, height: 30, speed: 2, direction: 1, minX: 200, maxX: 350 },
-        { x: 500, y: 320, width: 30, height: 30, speed: 1.5, direction: 1, minX: 450, maxX: 600 },
-        { x: 650, y: 420, width: 30, height: 30, speed: 2, direction: -1, minX: 600, maxX: 750 }
+        { x: 300, y: 420, width: 30, height: 30, speed: 2, direction: 1, minX: 200, maxX: 400, alive: true },
+        { x: 500, y: 320, width: 30, height: 30, speed: 1.5, direction: 1, minX: 400, maxX: 600, alive: true },
+        { x: 900, y: 420, width: 30, height: 30, speed: 2, direction: -1, minX: 850, maxX: 1000, alive: true },
+        { x: 1150, y: 370, width: 30, height: 30, speed: 1.8, direction: 1, minX: 1050, maxX: 1250, alive: true },
+        { x: 1350, y: 270, width: 30, height: 30, speed: 1.5, direction: -1, minX: 1300, maxX: 1450, alive: true },
+        { x: 1750, y: 320, width: 30, height: 30, speed: 2, direction: 1, minX: 1700, maxX: 1900, alive: true },
+        { x: 2000, y: 420, width: 30, height: 30, speed: 1.5, direction: -1, minX: 1950, maxX: 2100, alive: true },
+        { x: 2150, y: 370, width: 30, height: 30, speed: 1.8, direction: 1, minX: 2100, maxX: 2250, alive: true },
+        { x: 2450, y: 220, width: 30, height: 30, speed: 2, direction: -1, minX: 2400, maxX: 2550, alive: true },
+        { x: 2700, y: 420, width: 30, height: 30, speed: 1.5, direction: 1, minX: 2600, maxX: 2800, alive: true }
     ],
-    door: { x: 700, y: 480, width: 50, height: 70 },
+    door: { x: 2850, y: 330, width: 50, height: 70 },
     playerStart: { x: 50, y: 100 }
 };
 
-// Level 2 data
+// Level 2 data - ještě delší!
 const level2Data = {
+    worldWidth: 3500,
     platforms: [
-        { x: 0, y: 550, width: 300, height: 50, color: '#8B4513' },
-        { x: 500, y: 550, width: 300, height: 50, color: '#8B4513' },
-        { x: 350, y: 450, width: 100, height: 20, color: '#8B4513' },
-        { x: 100, y: 400, width: 120, height: 20, color: '#8B4513' },
-        { x: 600, y: 400, width: 120, height: 20, color: '#8B4513' },
-        { x: 250, y: 300, width: 100, height: 20, color: '#8B4513' },
-        { x: 450, y: 300, width: 100, height: 20, color: '#8B4513' },
-        { x: 350, y: 200, width: 100, height: 20, color: '#8B4513' },
-        { x: 150, y: 150, width: 80, height: 20, color: '#8B4513' },
-        { x: 570, y: 150, width: 80, height: 20, color: '#8B4513' }
+        // Spodní platforma s mezerami!
+        { x: 0, y: 550, width: 500, height: 50, color: '#8B4513' },
+        { x: 700, y: 550, width: 600, height: 50, color: '#8B4513' },
+        { x: 1500, y: 550, width: 500, height: 50, color: '#8B4513' },
+        { x: 2200, y: 550, width: 600, height: 50, color: '#8B4513' },
+        { x: 3000, y: 550, width: 500, height: 50, color: '#8B4513' },
+        
+        // Jumping platformy
+        { x: 550, y: 450, width: 100, height: 20, color: '#8B4513' },
+        { x: 1350, y: 450, width: 100, height: 20, color: '#8B4513' },
+        { x: 2050, y: 450, width: 100, height: 20, color: '#8B4513' },
+        
+        // Výškové platformy
+        { x: 200, y: 400, width: 120, height: 20, color: '#8B4513' },
+        { x: 400, y: 300, width: 100, height: 20, color: '#8B4513' },
+        { x: 800, y: 400, width: 150, height: 20, color: '#8B4513' },
+        { x: 1000, y: 300, width: 100, height: 20, color: '#8B4513' },
+        { x: 1200, y: 200, width: 120, height: 20, color: '#8B4513' },
+        { x: 1600, y: 400, width: 100, height: 20, color: '#8B4513' },
+        { x: 1800, y: 300, width: 120, height: 20, color: '#8B4513' },
+        { x: 2300, y: 400, width: 150, height: 20, color: '#8B4513' },
+        { x: 2550, y: 300, width: 100, height: 20, color: '#8B4513' },
+        { x: 2800, y: 200, width: 120, height: 20, color: '#8B4513' },
+        { x: 3100, y: 350, width: 150, height: 20, color: '#8B4513' },
+        { x: 3300, y: 450, width: 150, height: 20, color: '#8B4513' }
     ],
     coins: [
-        { x: 150, y: 350, width: 20, height: 20, collected: false },
-        { x: 400, y: 420, width: 20, height: 20, collected: false },
-        { x: 650, y: 350, width: 20, height: 20, collected: false },
-        { x: 290, y: 250, width: 20, height: 20, collected: false },
-        { x: 490, y: 250, width: 20, height: 20, collected: false },
-        { x: 400, y: 150, width: 20, height: 20, collected: false },
-        { x: 190, y: 100, width: 20, height: 20, collected: false },
-        { x: 610, y: 100, width: 20, height: 20, collected: false }
+        { x: 250, y: 350, width: 20, height: 20, collected: false },
+        { x: 450, y: 250, width: 20, height: 20, collected: false },
+        { x: 600, y: 400, width: 20, height: 20, collected: false },
+        { x: 850, y: 350, width: 20, height: 20, collected: false },
+        { x: 1050, y: 250, width: 20, height: 20, collected: false },
+        { x: 1250, y: 150, width: 20, height: 20, collected: false },
+        { x: 1400, y: 400, width: 20, height: 20, collected: false },
+        { x: 1650, y: 350, width: 20, height: 20, collected: false },
+        { x: 1850, y: 250, width: 20, height: 20, collected: false },
+        { x: 2100, y: 400, width: 20, height: 20, collected: false },
+        { x: 2350, y: 350, width: 20, height: 20, collected: false },
+        { x: 2600, y: 250, width: 20, height: 20, collected: false },
+        { x: 2850, y: 150, width: 20, height: 20, collected: false },
+        { x: 3150, y: 300, width: 20, height: 20, collected: false },
+        { x: 3350, y: 400, width: 20, height: 20, collected: false }
     ],
     enemies: [
-        { x: 150, y: 370, width: 30, height: 30, speed: 2, direction: 1, minX: 100, maxX: 220 },
-        { x: 630, y: 370, width: 30, height: 30, speed: 2, direction: -1, minX: 600, maxX: 720 },
-        { x: 280, y: 270, width: 30, height: 30, speed: 1.5, direction: 1, minX: 250, maxX: 350 },
-        { x: 480, y: 270, width: 30, height: 30, speed: 1.5, direction: -1, minX: 450, maxX: 550 },
-        { x: 190, y: 120, width: 30, height: 30, speed: 1, direction: 1, minX: 150, maxX: 230 },
-        { x: 610, y: 120, width: 30, height: 30, speed: 1, direction: -1, minX: 570, maxX: 650 }
+        { x: 250, y: 370, width: 30, height: 30, speed: 2, direction: 1, minX: 200, maxX: 350, alive: true },
+        { x: 850, y: 370, width: 30, height: 30, speed: 2.5, direction: -1, minX: 800, maxX: 950, alive: true },
+        { x: 1050, y: 270, width: 30, height: 30, speed: 1.8, direction: 1, minX: 1000, maxX: 1150, alive: true },
+        { x: 1250, y: 170, width: 30, height: 30, speed: 1.5, direction: -1, minX: 1200, maxX: 1350, alive: true },
+        { x: 1650, y: 370, width: 30, height: 30, speed: 2, direction: 1, minX: 1600, maxX: 1750, alive: true },
+        { x: 1850, y: 270, width: 30, height: 30, speed: 2.2, direction: -1, minX: 1800, maxX: 1950, alive: true },
+        { x: 2350, y: 370, width: 30, height: 30, speed: 2, direction: 1, minX: 2300, maxX: 2450, alive: true },
+        { x: 2600, y: 270, width: 30, height: 30, speed: 1.8, direction: -1, minX: 2550, maxX: 2700, alive: true },
+        { x: 2850, y: 170, width: 30, height: 30, speed: 1.5, direction: 1, minX: 2800, maxX: 2950, alive: true },
+        { x: 3150, y: 320, width: 30, height: 30, speed: 2.5, direction: -1, minX: 3100, maxX: 3250, alive: true },
+        { x: 600, y: 420, width: 30, height: 30, speed: 2, direction: 1, minX: 550, maxX: 700, alive: true },
+        { x: 1400, y: 420, width: 30, height: 30, speed: 2, direction: -1, minX: 1350, maxX: 1500, alive: true }
     ],
-    door: { x: 375, y: 130, width: 50, height: 70 },
+    door: { x: 3350, y: 380, width: 50, height: 70 },
     playerStart: { x: 50, y: 480 }
 };
 
 // Aktuální herní data
+let worldWidth = level1Data.worldWidth;
 let platforms = [...level1Data.platforms];
 let coins = JSON.parse(JSON.stringify(level1Data.coins));
 let enemies = JSON.parse(JSON.stringify(level1Data.enemies));
@@ -120,13 +194,33 @@ document.addEventListener('keydown', (e) => {
         keys.space = true;
         e.preventDefault();
     }
+    if (e.key.toLowerCase() === 'k') {
+        if (!keys.k) { // Jen při prvním stisknutí
+            shootFireball();
+        }
+        keys.k = true;
+    }
 });
 
 document.addEventListener('keyup', (e) => {
     if (e.key.toLowerCase() === 'a') keys.a = false;
     if (e.key.toLowerCase() === 'd') keys.d = false;
     if (e.key === ' ' || e.key === 'Spacebar') keys.space = false;
+    if (e.key.toLowerCase() === 'k') keys.k = false;
 });
+
+// Funkce pro střelbu ohnivé koule
+function shootFireball() {
+    const fireball = {
+        x: player.facingRight ? player.x + player.width : player.x,
+        y: player.y + player.height / 2 - 5,
+        width: 15,
+        height: 15,
+        speed: 8,
+        direction: player.facingRight ? 1 : -1
+    };
+    fireballs.push(fireball);
+}
 
 // Funkce pro aktualizaci životů
 function updateLives() {
@@ -141,13 +235,12 @@ function loseLife() {
     lives--;
     updateLives();
     isInvincible = true;
-    invincibilityTimer = 120; // 2 sekundy nesmrtelnosti
+    invincibilityTimer = 120;
     
     if (lives <= 0) {
         alert('Prohra! Tvoje skóre: ' + score);
         resetGame();
     } else {
-        // Reset pozice hráče
         if (currentLevel === 1) {
             player.x = level1Data.playerStart.x;
             player.y = level1Data.playerStart.y;
@@ -157,6 +250,7 @@ function loseLife() {
         }
         player.velocityX = 0;
         player.velocityY = 0;
+        camera.x = 0;
     }
 }
 
@@ -168,6 +262,8 @@ function resetGame() {
     updateLives();
     scoreElement.textContent = score;
     levelElement.textContent = currentLevel;
+    camera.x = 0;
+    fireballs = [];
     loadLevel(1);
 }
 
@@ -175,8 +271,10 @@ function resetGame() {
 function loadLevel(levelNum) {
     currentLevel = levelNum;
     levelElement.textContent = currentLevel;
+    fireballs = [];
     
     if (levelNum === 1) {
+        worldWidth = level1Data.worldWidth;
         platforms = [...level1Data.platforms];
         coins = JSON.parse(JSON.stringify(level1Data.coins));
         enemies = JSON.parse(JSON.stringify(level1Data.enemies));
@@ -184,6 +282,7 @@ function loadLevel(levelNum) {
         player.x = level1Data.playerStart.x;
         player.y = level1Data.playerStart.y;
     } else if (levelNum === 2) {
+        worldWidth = level2Data.worldWidth;
         platforms = [...level2Data.platforms];
         coins = JSON.parse(JSON.stringify(level2Data.coins));
         enemies = JSON.parse(JSON.stringify(level2Data.enemies));
@@ -194,6 +293,7 @@ function loadLevel(levelNum) {
     
     player.velocityX = 0;
     player.velocityY = 0;
+    camera.x = 0;
 }
 
 // Funkce pro kontrolu, zda jsou všechny coiny sebrané
@@ -201,42 +301,107 @@ function allCoinsCollected() {
     return coins.every(coin => coin.collected);
 }
 
-// Funkce pro kreslení hráče
+// Aktualizace kamery
+function updateCamera() {
+    // Kamera sleduje hráče, ale s odsazením
+    const targetX = player.x - canvas.width / 3;
+    camera.x = Math.max(0, Math.min(targetX, worldWidth - canvas.width));
+}
+
+// Funkce pro kreslení hráče s hůlkou
 function drawPlayer() {
+    const drawX = player.x - camera.x;
+    const drawY = player.y;
+    
     // Blikání při nesmrtelnosti
     if (isInvincible && Math.floor(Date.now() / 100) % 2 === 0) {
         ctx.globalAlpha = 0.5;
     }
     
+    // Tělo hráče
     ctx.fillStyle = player.color;
-    ctx.fillRect(player.x, player.y, player.width, player.height);
+    ctx.fillRect(drawX, drawY, player.width, player.height);
     
     // Oči
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(player.x + 10, player.y + 10, 8, 8);
-    ctx.fillRect(player.x + 22, player.y + 10, 8, 8);
+    ctx.fillRect(drawX + 10, drawY + 10, 8, 8);
+    ctx.fillRect(drawX + 22, drawY + 10, 8, 8);
     
     // Zorničky
     ctx.fillStyle = '#000000';
-    ctx.fillRect(player.x + 13, player.y + 13, 4, 4);
-    ctx.fillRect(player.x + 25, player.y + 13, 4, 4);
+    ctx.fillRect(drawX + 13, drawY + 13, 4, 4);
+    ctx.fillRect(drawX + 25, drawY + 13, 4, 4);
+    
+    // Hůlka
+    ctx.strokeStyle = '#8B4513';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    if (player.facingRight) {
+        ctx.moveTo(drawX + player.width, drawY + player.height / 2);
+        ctx.lineTo(drawX + player.width + 20, drawY + player.height / 2 - 10);
+    } else {
+        ctx.moveTo(drawX, drawY + player.height / 2);
+        ctx.lineTo(drawX - 20, drawY + player.height / 2 - 10);
+    }
+    ctx.stroke();
+    
+    // Hvězdička na konci hůlky
+    ctx.fillStyle = '#FFD700';
+    ctx.beginPath();
+    const starX = player.facingRight ? drawX + player.width + 20 : drawX - 20;
+    const starY = drawY + player.height / 2 - 10;
+    ctx.arc(starX, starY, 4, 0, Math.PI * 2);
+    ctx.fill();
     
     ctx.globalAlpha = 1.0;
+}
+
+// Kreslení ohnivých koulí
+function drawFireballs() {
+    fireballs.forEach(fireball => {
+        const drawX = fireball.x - camera.x;
+        
+        // Efekt plamene
+        const time = Date.now() / 50;
+        
+        // Vnitřní žlutá část
+        ctx.fillStyle = '#FFFF00';
+        ctx.beginPath();
+        ctx.arc(drawX, fireball.y, fireball.width / 2, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Vnější oranžová část
+        ctx.fillStyle = '#FF6600';
+        ctx.beginPath();
+        ctx.arc(drawX, fireball.y, fireball.width / 1.5, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Červená střed
+        ctx.fillStyle = '#FF0000';
+        ctx.beginPath();
+        ctx.arc(drawX, fireball.y, fireball.width / 3, 0, Math.PI * 2);
+        ctx.fill();
+    });
 }
 
 // Funkce pro kreslení platforem
 function drawPlatforms() {
     platforms.forEach(platform => {
-        ctx.fillStyle = platform.color;
-        ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+        const drawX = platform.x - camera.x;
         
-        ctx.strokeStyle = '#654321';
-        ctx.lineWidth = 2;
-        for (let i = 0; i < platform.width; i += 30) {
-            ctx.beginPath();
-            ctx.moveTo(platform.x + i, platform.y);
-            ctx.lineTo(platform.x + i, platform.y + platform.height);
-            ctx.stroke();
+        // Pouze kresli platformy, které jsou viditelné
+        if (drawX + platform.width > 0 && drawX < canvas.width) {
+            ctx.fillStyle = platform.color;
+            ctx.fillRect(drawX, platform.y, platform.width, platform.height);
+            
+            ctx.strokeStyle = '#654321';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < platform.width; i += 30) {
+                ctx.beginPath();
+                ctx.moveTo(drawX + i, platform.y);
+                ctx.lineTo(drawX + i, platform.y + platform.height);
+                ctx.stroke();
+            }
         }
     });
 }
@@ -245,24 +410,28 @@ function drawPlatforms() {
 function drawCoins() {
     coins.forEach(coin => {
         if (!coin.collected) {
-            const time = Date.now() / 200;
-            const scale = Math.abs(Math.sin(time)) * 0.3 + 0.7;
+            const drawX = coin.x - camera.x;
             
-            ctx.save();
-            ctx.translate(coin.x + coin.width / 2, coin.y + coin.height / 2);
-            ctx.scale(scale, 1);
-            
-            ctx.fillStyle = '#FFD700';
-            ctx.beginPath();
-            ctx.arc(0, 0, coin.width / 2, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.fillStyle = '#FFA500';
-            ctx.beginPath();
-            ctx.arc(0, 0, coin.width / 3, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.restore();
+            if (drawX + coin.width > 0 && drawX < canvas.width) {
+                const time = Date.now() / 200;
+                const scale = Math.abs(Math.sin(time)) * 0.3 + 0.7;
+                
+                ctx.save();
+                ctx.translate(drawX + coin.width / 2, coin.y + coin.height / 2);
+                ctx.scale(scale, 1);
+                
+                ctx.fillStyle = '#FFD700';
+                ctx.beginPath();
+                ctx.arc(0, 0, coin.width / 2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.fillStyle = '#FFA500';
+                ctx.beginPath();
+                ctx.arc(0, 0, coin.width / 3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.restore();
+            }
         }
     });
 }
@@ -270,54 +439,51 @@ function drawCoins() {
 // Funkce pro kreslení nepřátel
 function drawEnemies() {
     enemies.forEach(enemy => {
-        ctx.fillStyle = '#8B008B';
-        ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
-        
-        // Oči nepřítele
-        ctx.fillStyle = '#FF0000';
-        ctx.fillRect(enemy.x + 5, enemy.y + 8, 6, 6);
-        ctx.fillRect(enemy.x + 19, enemy.y + 8, 6, 6);
-        
-        // Zlý úsměv
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(enemy.x + 8, enemy.y + 20, 14, 3);
+        if (enemy.alive) {
+            const drawX = enemy.x - camera.x;
+            
+            if (drawX + enemy.width > 0 && drawX < canvas.width) {
+                ctx.fillStyle = '#8B008B';
+                ctx.fillRect(drawX, enemy.y, enemy.width, enemy.height);
+                
+                ctx.fillStyle = '#FF0000';
+                ctx.fillRect(drawX + 5, enemy.y + 8, 6, 6);
+                ctx.fillRect(drawX + 19, enemy.y + 8, 6, 6);
+                
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(drawX + 8, enemy.y + 20, 14, 3);
+            }
+        }
     });
 }
 
 // Funkce pro kreslení dveří
 function drawDoor() {
-    const allCollected = allCoinsCollected();
+    const drawX = door.x - camera.x;
     
-    // Dveře
-    if (allCollected) {
-        ctx.fillStyle = '#00FF00'; // Zelené když jsou všechny coiny sebrané
-    } else {
-        ctx.fillStyle = '#888888'; // Šedé když nejsou
-    }
-    ctx.fillRect(door.x, door.y, door.width, door.height);
-    
-    // Okraje dveří
-    ctx.strokeStyle = '#000000';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(door.x, door.y, door.width, door.height);
-    
-    // Klika
-    ctx.fillStyle = '#FFD700';
-    ctx.beginPath();
-    ctx.arc(door.x + 40, door.y + 35, 4, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Nápis
-    if (!allCollected) {
-        ctx.fillStyle = '#FFFFFF';
+    if (drawX + door.width > 0 && drawX < canvas.width) {
+        const allCollected = allCoinsCollected();
+        
+        if (allCollected) {
+            ctx.fillStyle = '#00FF00';
+        } else {
+            ctx.fillStyle = '#888888';
+        }
+        ctx.fillRect(drawX, door.y, door.width, door.height);
+        
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(drawX, door.y, door.width, door.height);
+        
+        ctx.fillStyle = '#FFD700';
+        ctx.beginPath();
+        ctx.arc(drawX + 40, door.y + 35, 4, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.fillStyle = allCollected ? '#00FF00' : '#FFFFFF';
         ctx.font = '12px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('Locked', door.x + door.width / 2, door.y + door.height + 15);
-    } else {
-        ctx.fillStyle = '#00FF00';
-        ctx.font = '12px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('Enter!', door.x + door.width / 2, door.y + door.height + 15);
+        ctx.fillText(allCollected ? 'Enter!' : 'Locked', drawX + door.width / 2, door.y + door.height + 15);
     }
 }
 
@@ -329,19 +495,42 @@ function checkCollision(rect1, rect2) {
            rect1.y + rect1.height > rect2.y;
 }
 
+// Aktualizace ohnivých koulí
+function updateFireballs() {
+    fireballs.forEach((fireball, index) => {
+        fireball.x += fireball.speed * fireball.direction;
+        
+        // Odstranění střel mimo obrazovku
+        if (fireball.x < camera.x - 100 || fireball.x > camera.x + canvas.width + 100) {
+            fireballs.splice(index, 1);
+            return;
+        }
+        
+        // Kontrola kolize s nepřáteli
+        enemies.forEach(enemy => {
+            if (enemy.alive && checkCollision(fireball, enemy)) {
+                enemy.alive = false;
+                fireballs.splice(index, 1);
+                score += 20; // Bonus za zabití nepřítele
+                scoreElement.textContent = score;
+            }
+        });
+    });
+}
+
 // Aktualizace nepřátel
 function updateEnemies() {
     enemies.forEach(enemy => {
-        enemy.x += enemy.speed * enemy.direction;
-        
-        // Odraz od hranic
-        if (enemy.x <= enemy.minX || enemy.x >= enemy.maxX) {
-            enemy.direction *= -1;
-        }
-        
-        // Kontrola kolize s hráčem
-        if (checkCollision(player, enemy)) {
-            loseLife();
+        if (enemy.alive) {
+            enemy.x += enemy.speed * enemy.direction;
+            
+            if (enemy.x <= enemy.minX || enemy.x >= enemy.maxX) {
+                enemy.direction *= -1;
+            }
+            
+            if (checkCollision(player, enemy)) {
+                loseLife();
+            }
         }
     });
 }
@@ -350,8 +539,14 @@ function updateEnemies() {
 function updatePlayer() {
     // Horizontální pohyb
     player.velocityX = 0;
-    if (keys.a) player.velocityX = -player.speed;
-    if (keys.d) player.velocityX = player.speed;
+    if (keys.a) {
+        player.velocityX = -player.speed;
+        player.facingRight = false;
+    }
+    if (keys.d) {
+        player.velocityX = player.speed;
+        player.facingRight = true;
+    }
     
     // Skok
     if (keys.space && player.onGround) {
@@ -366,9 +561,9 @@ function updatePlayer() {
     player.x += player.velocityX;
     player.y += player.velocityY;
     
-    // Kontrola kolize s hranicemi canvasu
+    // Kontrola kolize s hranicemi světa
     if (player.x < 0) player.x = 0;
-    if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
+    if (player.x + player.width > worldWidth) player.x = worldWidth - player.width;
     
     // Kontrola pádu mimo obrazovku
     if (player.y > canvas.height) {
@@ -436,16 +631,20 @@ function gameLoop() {
     ctx.fillStyle = '#87CEEB';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Aktualizace a kreslení
+    // Aktualizace
     updatePlayer();
+    updateCamera();
     updateEnemies();
+    updateFireballs();
     checkCoinCollection();
     checkDoorEntry();
     
+    // Kreslení
     drawPlatforms();
     drawCoins();
     drawEnemies();
     drawDoor();
+    drawFireballs();
     drawPlayer();
     
     // Další snímek
