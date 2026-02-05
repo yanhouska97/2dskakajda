@@ -6,6 +6,36 @@ const ctx = canvas.getContext('2d');
 canvas.width = 800;
 canvas.height = 600;
 
+// Načítání obrázků
+const images = {
+    player: new Image(),
+    enemy: new Image(),
+    background: new Image()
+};
+
+let imagesLoaded = 0;
+const totalImages = 3;
+
+// Funkce pro kontrolu načtení všech obrázků
+function checkImagesLoaded() {
+    imagesLoaded++;
+    if (imagesLoaded === totalImages) {
+        console.log('Všechny obrázky načteny!');
+        updateLives();
+        gameLoop();
+    }
+}
+
+// Načtení obrázků
+images.player.onload = checkImagesLoaded;
+images.player.src = 'player.png';
+
+images.enemy.onload = checkImagesLoaded;
+images.enemy.src = 'enemy.png';
+
+images.background.onload = checkImagesLoaded;
+images.background.src = 'background.png';
+
 // Herní proměnné
 let score = 0;
 let lives = 3;
@@ -29,7 +59,6 @@ const player = {
     y: 100,
     width: 40,
     height: 40,
-    color: '#FF0000',
     velocityX: 0,
     velocityY: 0,
     speed: 5,
@@ -55,30 +84,21 @@ const keys = {
 
 // Level 1 data - DELŠÍ MAPA!
 const level1Data = {
-    worldWidth: 3000, // Mnohem širší svět!
+    worldWidth: 3000,
     platforms: [
-        // Spodní dlouhá platforma
         { x: 0, y: 550, width: 3000, height: 50, color: '#8B4513' },
-        
-        // Začátek
         { x: 200, y: 450, width: 150, height: 20, color: '#8B4513' },
         { x: 400, y: 350, width: 150, height: 20, color: '#8B4513' },
         { x: 600, y: 250, width: 120, height: 20, color: '#8B4513' },
-        
-        // Střední část
         { x: 850, y: 450, width: 100, height: 20, color: '#8B4513' },
         { x: 1050, y: 400, width: 150, height: 20, color: '#8B4513' },
         { x: 1300, y: 300, width: 100, height: 20, color: '#8B4513' },
         { x: 1500, y: 200, width: 120, height: 20, color: '#8B4513' },
         { x: 1700, y: 350, width: 150, height: 20, color: '#8B4513' },
-        
-        // Těžká sekce
         { x: 1950, y: 450, width: 80, height: 20, color: '#8B4513' },
         { x: 2100, y: 400, width: 80, height: 20, color: '#8B4513' },
         { x: 2250, y: 350, width: 80, height: 20, color: '#8B4513' },
         { x: 2400, y: 250, width: 100, height: 20, color: '#8B4513' },
-        
-        // Konec
         { x: 2600, y: 450, width: 150, height: 20, color: '#8B4513' },
         { x: 2800, y: 400, width: 150, height: 20, color: '#8B4513' }
     ],
@@ -99,38 +119,33 @@ const level1Data = {
         { x: 2850, y: 350, width: 20, height: 20, collected: false }
     ],
     enemies: [
-        { x: 300, y: 420, width: 30, height: 30, speed: 2, direction: 1, minX: 200, maxX: 400, alive: true },
-        { x: 500, y: 320, width: 30, height: 30, speed: 1.5, direction: 1, minX: 400, maxX: 600, alive: true },
-        { x: 900, y: 420, width: 30, height: 30, speed: 2, direction: -1, minX: 850, maxX: 1000, alive: true },
-        { x: 1150, y: 370, width: 30, height: 30, speed: 1.8, direction: 1, minX: 1050, maxX: 1250, alive: true },
-        { x: 1350, y: 270, width: 30, height: 30, speed: 1.5, direction: -1, minX: 1300, maxX: 1450, alive: true },
-        { x: 1750, y: 320, width: 30, height: 30, speed: 2, direction: 1, minX: 1700, maxX: 1900, alive: true },
-        { x: 2000, y: 420, width: 30, height: 30, speed: 1.5, direction: -1, minX: 1950, maxX: 2100, alive: true },
-        { x: 2150, y: 370, width: 30, height: 30, speed: 1.8, direction: 1, minX: 2100, maxX: 2250, alive: true },
-        { x: 2450, y: 220, width: 30, height: 30, speed: 2, direction: -1, minX: 2400, maxX: 2550, alive: true },
-        { x: 2700, y: 420, width: 30, height: 30, speed: 1.5, direction: 1, minX: 2600, maxX: 2800, alive: true }
+        { x: 300, y: 420, width: 40, height: 40, speed: 2, direction: 1, minX: 200, maxX: 400, alive: true },
+        { x: 500, y: 320, width: 40, height: 40, speed: 1.5, direction: 1, minX: 400, maxX: 600, alive: true },
+        { x: 900, y: 420, width: 40, height: 40, speed: 2, direction: -1, minX: 850, maxX: 1000, alive: true },
+        { x: 1150, y: 370, width: 40, height: 40, speed: 1.8, direction: 1, minX: 1050, maxX: 1250, alive: true },
+        { x: 1350, y: 270, width: 40, height: 40, speed: 1.5, direction: -1, minX: 1300, maxX: 1450, alive: true },
+        { x: 1750, y: 320, width: 40, height: 40, speed: 2, direction: 1, minX: 1700, maxX: 1900, alive: true },
+        { x: 2000, y: 420, width: 40, height: 40, speed: 1.5, direction: -1, minX: 1950, maxX: 2100, alive: true },
+        { x: 2150, y: 370, width: 40, height: 40, speed: 1.8, direction: 1, minX: 2100, maxX: 2250, alive: true },
+        { x: 2450, y: 220, width: 40, height: 40, speed: 2, direction: -1, minX: 2400, maxX: 2550, alive: true },
+        { x: 2700, y: 420, width: 40, height: 40, speed: 1.5, direction: 1, minX: 2600, maxX: 2800, alive: true }
     ],
     door: { x: 2850, y: 330, width: 50, height: 70 },
     playerStart: { x: 50, y: 100 }
 };
 
-// Level 2 data - ještě delší!
+// Level 2 data
 const level2Data = {
     worldWidth: 3500,
     platforms: [
-        // Spodní platforma s mezerami!
         { x: 0, y: 550, width: 500, height: 50, color: '#8B4513' },
         { x: 700, y: 550, width: 600, height: 50, color: '#8B4513' },
         { x: 1500, y: 550, width: 500, height: 50, color: '#8B4513' },
         { x: 2200, y: 550, width: 600, height: 50, color: '#8B4513' },
         { x: 3000, y: 550, width: 500, height: 50, color: '#8B4513' },
-        
-        // Jumping platformy
         { x: 550, y: 450, width: 100, height: 20, color: '#8B4513' },
         { x: 1350, y: 450, width: 100, height: 20, color: '#8B4513' },
         { x: 2050, y: 450, width: 100, height: 20, color: '#8B4513' },
-        
-        // Výškové platformy
         { x: 200, y: 400, width: 120, height: 20, color: '#8B4513' },
         { x: 400, y: 300, width: 100, height: 20, color: '#8B4513' },
         { x: 800, y: 400, width: 150, height: 20, color: '#8B4513' },
@@ -162,18 +177,18 @@ const level2Data = {
         { x: 3350, y: 400, width: 20, height: 20, collected: false }
     ],
     enemies: [
-        { x: 250, y: 370, width: 30, height: 30, speed: 2, direction: 1, minX: 200, maxX: 350, alive: true },
-        { x: 850, y: 370, width: 30, height: 30, speed: 2.5, direction: -1, minX: 800, maxX: 950, alive: true },
-        { x: 1050, y: 270, width: 30, height: 30, speed: 1.8, direction: 1, minX: 1000, maxX: 1150, alive: true },
-        { x: 1250, y: 170, width: 30, height: 30, speed: 1.5, direction: -1, minX: 1200, maxX: 1350, alive: true },
-        { x: 1650, y: 370, width: 30, height: 30, speed: 2, direction: 1, minX: 1600, maxX: 1750, alive: true },
-        { x: 1850, y: 270, width: 30, height: 30, speed: 2.2, direction: -1, minX: 1800, maxX: 1950, alive: true },
-        { x: 2350, y: 370, width: 30, height: 30, speed: 2, direction: 1, minX: 2300, maxX: 2450, alive: true },
-        { x: 2600, y: 270, width: 30, height: 30, speed: 1.8, direction: -1, minX: 2550, maxX: 2700, alive: true },
-        { x: 2850, y: 170, width: 30, height: 30, speed: 1.5, direction: 1, minX: 2800, maxX: 2950, alive: true },
-        { x: 3150, y: 320, width: 30, height: 30, speed: 2.5, direction: -1, minX: 3100, maxX: 3250, alive: true },
-        { x: 600, y: 420, width: 30, height: 30, speed: 2, direction: 1, minX: 550, maxX: 700, alive: true },
-        { x: 1400, y: 420, width: 30, height: 30, speed: 2, direction: -1, minX: 1350, maxX: 1500, alive: true }
+        { x: 250, y: 370, width: 40, height: 40, speed: 2, direction: 1, minX: 200, maxX: 350, alive: true },
+        { x: 850, y: 370, width: 40, height: 40, speed: 2.5, direction: -1, minX: 800, maxX: 950, alive: true },
+        { x: 1050, y: 270, width: 40, height: 40, speed: 1.8, direction: 1, minX: 1000, maxX: 1150, alive: true },
+        { x: 1250, y: 170, width: 40, height: 40, speed: 1.5, direction: -1, minX: 1200, maxX: 1350, alive: true },
+        { x: 1650, y: 370, width: 40, height: 40, speed: 2, direction: 1, minX: 1600, maxX: 1750, alive: true },
+        { x: 1850, y: 270, width: 40, height: 40, speed: 2.2, direction: -1, minX: 1800, maxX: 1950, alive: true },
+        { x: 2350, y: 370, width: 40, height: 40, speed: 2, direction: 1, minX: 2300, maxX: 2450, alive: true },
+        { x: 2600, y: 270, width: 40, height: 40, speed: 1.8, direction: -1, minX: 2550, maxX: 2700, alive: true },
+        { x: 2850, y: 170, width: 40, height: 40, speed: 1.5, direction: 1, minX: 2800, maxX: 2950, alive: true },
+        { x: 3150, y: 320, width: 40, height: 40, speed: 2.5, direction: -1, minX: 3100, maxX: 3250, alive: true },
+        { x: 600, y: 420, width: 40, height: 40, speed: 2, direction: 1, minX: 550, maxX: 700, alive: true },
+        { x: 1400, y: 420, width: 40, height: 40, speed: 2, direction: -1, minX: 1350, maxX: 1500, alive: true }
     ],
     door: { x: 3350, y: 380, width: 50, height: 70 },
     playerStart: { x: 50, y: 480 }
@@ -195,7 +210,7 @@ document.addEventListener('keydown', (e) => {
         e.preventDefault();
     }
     if (e.key.toLowerCase() === 'k') {
-        if (!keys.k) { // Jen při prvním stisknutí
+        if (!keys.k) {
             shootFireball();
         }
         keys.k = true;
@@ -303,12 +318,27 @@ function allCoinsCollected() {
 
 // Aktualizace kamery
 function updateCamera() {
-    // Kamera sleduje hráče, ale s odsazením
     const targetX = player.x - canvas.width / 3;
     camera.x = Math.max(0, Math.min(targetX, worldWidth - canvas.width));
 }
 
-// Funkce pro kreslení hráče s hůlkou
+// Funkce pro kreslení pozadí
+function drawBackground() {
+    // Kreslení opakujícího se pozadí
+    const bgWidth = images.background.width;
+    const bgHeight = images.background.height;
+    
+    // Parallax efekt - pozadí se pohybuje pomaleji než kamera
+    const parallaxX = camera.x * 0.5;
+    const startX = Math.floor(parallaxX / bgWidth) * bgWidth - parallaxX;
+    
+    // Kreslit pozadí opakovaně přes celou obrazovku
+    for (let x = startX; x < canvas.width; x += bgWidth) {
+        ctx.drawImage(images.background, x, 0, bgWidth, canvas.height);
+    }
+}
+
+// Funkce pro kreslení hráče s obrázkem
 function drawPlayer() {
     const drawX = player.x - camera.x;
     const drawY = player.y;
@@ -318,40 +348,16 @@ function drawPlayer() {
         ctx.globalAlpha = 0.5;
     }
     
-    // Tělo hráče
-    ctx.fillStyle = player.color;
-    ctx.fillRect(drawX, drawY, player.width, player.height);
-    
-    // Oči
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(drawX + 10, drawY + 10, 8, 8);
-    ctx.fillRect(drawX + 22, drawY + 10, 8, 8);
-    
-    // Zorničky
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(drawX + 13, drawY + 13, 4, 4);
-    ctx.fillRect(drawX + 25, drawY + 13, 4, 4);
-    
-    // Hůlka
-    ctx.strokeStyle = '#8B4513';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
+    // Kreslení panáčka
     if (player.facingRight) {
-        ctx.moveTo(drawX + player.width, drawY + player.height / 2);
-        ctx.lineTo(drawX + player.width + 20, drawY + player.height / 2 - 10);
+        ctx.drawImage(images.player, drawX, drawY, player.width, player.height);
     } else {
-        ctx.moveTo(drawX, drawY + player.height / 2);
-        ctx.lineTo(drawX - 20, drawY + player.height / 2 - 10);
+        // Zrcadlení pro pohyb doleva
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(images.player, -drawX - player.width, drawY, player.width, player.height);
+        ctx.restore();
     }
-    ctx.stroke();
-    
-    // Hvězdička na konci hůlky
-    ctx.fillStyle = '#FFD700';
-    ctx.beginPath();
-    const starX = player.facingRight ? drawX + player.width + 20 : drawX - 20;
-    const starY = drawY + player.height / 2 - 10;
-    ctx.arc(starX, starY, 4, 0, Math.PI * 2);
-    ctx.fill();
     
     ctx.globalAlpha = 1.0;
 }
@@ -361,22 +367,18 @@ function drawFireballs() {
     fireballs.forEach(fireball => {
         const drawX = fireball.x - camera.x;
         
-        // Efekt plamene
         const time = Date.now() / 50;
         
-        // Vnitřní žlutá část
         ctx.fillStyle = '#FFFF00';
         ctx.beginPath();
         ctx.arc(drawX, fireball.y, fireball.width / 2, 0, Math.PI * 2);
         ctx.fill();
         
-        // Vnější oranžová část
         ctx.fillStyle = '#FF6600';
         ctx.beginPath();
         ctx.arc(drawX, fireball.y, fireball.width / 1.5, 0, Math.PI * 2);
         ctx.fill();
         
-        // Červená střed
         ctx.fillStyle = '#FF0000';
         ctx.beginPath();
         ctx.arc(drawX, fireball.y, fireball.width / 3, 0, Math.PI * 2);
@@ -389,7 +391,6 @@ function drawPlatforms() {
     platforms.forEach(platform => {
         const drawX = platform.x - camera.x;
         
-        // Pouze kresli platformy, které jsou viditelné
         if (drawX + platform.width > 0 && drawX < canvas.width) {
             ctx.fillStyle = platform.color;
             ctx.fillRect(drawX, platform.y, platform.width, platform.height);
@@ -436,22 +437,22 @@ function drawCoins() {
     });
 }
 
-// Funkce pro kreslení nepřátel
+// Funkce pro kreslení nepřátel s obrázkem
 function drawEnemies() {
     enemies.forEach(enemy => {
         if (enemy.alive) {
             const drawX = enemy.x - camera.x;
             
             if (drawX + enemy.width > 0 && drawX < canvas.width) {
-                ctx.fillStyle = '#8B008B';
-                ctx.fillRect(drawX, enemy.y, enemy.width, enemy.height);
-                
-                ctx.fillStyle = '#FF0000';
-                ctx.fillRect(drawX + 5, enemy.y + 8, 6, 6);
-                ctx.fillRect(drawX + 19, enemy.y + 8, 6, 6);
-                
-                ctx.fillStyle = '#000000';
-                ctx.fillRect(drawX + 8, enemy.y + 20, 14, 3);
+                // Kreslení nepřítele - zrcadlení podle směru pohybu
+                if (enemy.direction > 0) {
+                    ctx.drawImage(images.enemy, drawX, enemy.y, enemy.width, enemy.height);
+                } else {
+                    ctx.save();
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(images.enemy, -drawX - enemy.width, enemy.y, enemy.width, enemy.height);
+                    ctx.restore();
+                }
             }
         }
     });
@@ -500,18 +501,16 @@ function updateFireballs() {
     fireballs.forEach((fireball, index) => {
         fireball.x += fireball.speed * fireball.direction;
         
-        // Odstranění střel mimo obrazovku
         if (fireball.x < camera.x - 100 || fireball.x > camera.x + canvas.width + 100) {
             fireballs.splice(index, 1);
             return;
         }
         
-        // Kontrola kolize s nepřáteli
         enemies.forEach(enemy => {
             if (enemy.alive && checkCollision(fireball, enemy)) {
                 enemy.alive = false;
                 fireballs.splice(index, 1);
-                score += 20; // Bonus za zabití nepřítele
+                score += 20;
                 scoreElement.textContent = score;
             }
         });
@@ -537,7 +536,6 @@ function updateEnemies() {
 
 // Aktualizace fyziky hráče
 function updatePlayer() {
-    // Horizontální pohyb
     player.velocityX = 0;
     if (keys.a) {
         player.velocityX = -player.speed;
@@ -548,29 +546,23 @@ function updatePlayer() {
         player.facingRight = true;
     }
     
-    // Skok
     if (keys.space && player.onGround) {
         player.velocityY = -player.jumpPower;
         player.onGround = false;
     }
     
-    // Aplikace gravitace
     player.velocityY += gravity;
     
-    // Aktualizace pozice
     player.x += player.velocityX;
     player.y += player.velocityY;
     
-    // Kontrola kolize s hranicemi světa
     if (player.x < 0) player.x = 0;
     if (player.x + player.width > worldWidth) player.x = worldWidth - player.width;
     
-    // Kontrola pádu mimo obrazovku
     if (player.y > canvas.height) {
         loseLife();
     }
     
-    // Kontrola kolize s platformami
     player.onGround = false;
     platforms.forEach(platform => {
         if (checkCollision(player, platform)) {
@@ -593,7 +585,6 @@ function updatePlayer() {
         }
     });
     
-    // Aktualizace nesmrtelnosti
     if (isInvincible) {
         invincibilityTimer--;
         if (invincibilityTimer <= 0) {
@@ -627,9 +618,8 @@ function checkDoorEntry() {
 
 // Hlavní herní smyčka
 function gameLoop() {
-    // Vyčištění canvasu
-    ctx.fillStyle = '#87CEEB';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Kreslení pozadí
+    drawBackground();
     
     // Aktualizace
     updatePlayer();
@@ -651,6 +641,4 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// Spuštění hry
-updateLives();
-gameLoop();
+// Hra se spustí automaticky po načtení obrázků
