@@ -57,8 +57,8 @@ const levelElement = document.getElementById('currentLevel');
 const player = {
     x: 100,
     y: 100,
-    width: 40,
-    height: 40,
+    width: 80,
+    height: 80,
     velocityX: 0,
     velocityY: 0,
     speed: 5,
