@@ -82,7 +82,7 @@ const keys = {
     k: false
 };
 
-// Level 1 data - DELŠÍ MAPA!
+// Level 1 data
 const level1Data = {
     worldWidth: 3000,
     platforms: [
@@ -101,6 +101,17 @@ const level1Data = {
         { x: 2400, y: 250, width: 100, height: 20, color: '#8B4513' },
         { x: 2600, y: 450, width: 150, height: 20, color: '#8B4513' },
         { x: 2800, y: 400, width: 150, height: 20, color: '#8B4513' }
+    ],
+    rocks: [
+        { x: 500, y: 520, width: 30, height: 30 },
+        { x: 1200, y: 520, width: 30, height: 30 },
+        { x: 1800, y: 520, width: 30, height: 30 },
+        { x: 2500, y: 520, width: 30, height: 30 }
+    ],
+    water: [
+        { x: 750, y: 560, width: 100, height: 40 },
+        { x: 1400, y: 560, width: 100, height: 40 },
+        { x: 2200, y: 560, width: 100, height: 40 }
     ],
     coins: [
         { x: 250, y: 400, width: 20, height: 20, collected: false },
@@ -159,6 +170,20 @@ const level2Data = {
         { x: 3100, y: 350, width: 150, height: 20, color: '#8B4513' },
         { x: 3300, y: 450, width: 150, height: 20, color: '#8B4513' }
     ],
+    rocks: [
+        { x: 350, y: 520, width: 30, height: 30 },
+        { x: 900, y: 370, width: 30, height: 30 },
+        { x: 1100, y: 270, width: 30, height: 30 },
+        { x: 1700, y: 520, width: 30, height: 30 },
+        { x: 2400, y: 370, width: 30, height: 30 },
+        { x: 2900, y: 520, width: 30, height: 30 }
+    ],
+    water: [
+        { x: 500, y: 560, width: 200, height: 40 },
+        { x: 1300, y: 560, width: 200, height: 40 },
+        { x: 2000, y: 560, width: 200, height: 40 },
+        { x: 2800, y: 560, width: 200, height: 40 }
+    ],
     coins: [
         { x: 250, y: 350, width: 20, height: 20, collected: false },
         { x: 450, y: 250, width: 20, height: 20, collected: false },
@@ -194,9 +219,105 @@ const level2Data = {
     playerStart: { x: 50, y: 480 }
 };
 
+// Level 3 data - NEJTĚŽŠÍ!
+const level3Data = {
+    worldWidth: 4000,
+    platforms: [
+        { x: 0, y: 550, width: 400, height: 50, color: '#8B4513' },
+        { x: 600, y: 550, width: 300, height: 50, color: '#8B4513' },
+        { x: 1100, y: 550, width: 400, height: 50, color: '#8B4513' },
+        { x: 1700, y: 550, width: 300, height: 50, color: '#8B4513' },
+        { x: 2200, y: 550, width: 400, height: 50, color: '#8B4513' },
+        { x: 2800, y: 550, width: 300, height: 50, color: '#8B4513' },
+        { x: 3300, y: 550, width: 300, height: 50, color: '#8B4513' },
+        { x: 3700, y: 550, width: 300, height: 50, color: '#8B4513' },
+        
+        { x: 450, y: 450, width: 100, height: 20, color: '#8B4513' },
+        { x: 950, y: 450, width: 100, height: 20, color: '#8B4513' },
+        { x: 1550, y: 450, width: 100, height: 20, color: '#8B4513' },
+        { x: 2050, y: 450, width: 100, height: 20, color: '#8B4513' },
+        { x: 2650, y: 450, width: 100, height: 20, color: '#8B4513' },
+        { x: 3150, y: 450, width: 100, height: 20, color: '#8B4513' },
+        
+        { x: 200, y: 380, width: 100, height: 20, color: '#8B4513' },
+        { x: 400, y: 300, width: 80, height: 20, color: '#8B4513' },
+        { x: 700, y: 380, width: 100, height: 20, color: '#8B4513' },
+        { x: 900, y: 300, width: 80, height: 20, color: '#8B4513' },
+        { x: 1200, y: 380, width: 100, height: 20, color: '#8B4513' },
+        { x: 1400, y: 250, width: 80, height: 20, color: '#8B4513' },
+        { x: 1800, y: 380, width: 100, height: 20, color: '#8B4513' },
+        { x: 2000, y: 250, width: 80, height: 20, color: '#8B4513' },
+        { x: 2300, y: 380, width: 100, height: 20, color: '#8B4513' },
+        { x: 2500, y: 200, width: 80, height: 20, color: '#8B4513' },
+        { x: 2900, y: 380, width: 100, height: 20, color: '#8B4513' },
+        { x: 3400, y: 350, width: 100, height: 20, color: '#8B4513' },
+        { x: 3650, y: 250, width: 120, height: 20, color: '#8B4513' }
+    ],
+    rocks: [
+        { x: 300, y: 520, width: 30, height: 30 },
+        { x: 500, y: 420, width: 30, height: 30 },
+        { x: 750, y: 350, width: 30, height: 30 },
+        { x: 1000, y: 520, width: 30, height: 30 },
+        { x: 1250, y: 350, width: 30, height: 30 },
+        { x: 1600, y: 520, width: 30, height: 30 },
+        { x: 1850, y: 350, width: 30, height: 30 },
+        { x: 2100, y: 520, width: 30, height: 30 },
+        { x: 2350, y: 350, width: 30, height: 30 },
+        { x: 2700, y: 520, width: 30, height: 30 },
+        { x: 3000, y: 350, width: 30, height: 30 },
+        { x: 3500, y: 320, width: 30, height: 30 }
+    ],
+    water: [
+        { x: 400, y: 560, width: 200, height: 40 },
+        { x: 900, y: 560, width: 200, height: 40 },
+        { x: 1500, y: 560, width: 200, height: 40 },
+        { x: 2000, y: 560, width: 200, height: 40 },
+        { x: 2600, y: 560, width: 200, height: 40 },
+        { x: 3100, y: 560, width: 200, height: 40 }
+    ],
+    coins: [
+        { x: 250, y: 330, width: 20, height: 20, collected: false },
+        { x: 450, y: 250, width: 20, height: 20, collected: false },
+        { x: 500, y: 400, width: 20, height: 20, collected: false },
+        { x: 750, y: 330, width: 20, height: 20, collected: false },
+        { x: 950, y: 250, width: 20, height: 20, collected: false },
+        { x: 1000, y: 400, width: 20, height: 20, collected: false },
+        { x: 1250, y: 330, width: 20, height: 20, collected: false },
+        { x: 1450, y: 200, width: 20, height: 20, collected: false },
+        { x: 1600, y: 400, width: 20, height: 20, collected: false },
+        { x: 1850, y: 330, width: 20, height: 20, collected: false },
+        { x: 2050, y: 200, width: 20, height: 20, collected: false },
+        { x: 2350, y: 330, width: 20, height: 20, collected: false },
+        { x: 2550, y: 150, width: 20, height: 20, collected: false },
+        { x: 2950, y: 330, width: 20, height: 20, collected: false },
+        { x: 3450, y: 300, width: 20, height: 20, collected: false },
+        { x: 3700, y: 200, width: 20, height: 20, collected: false }
+    ],
+    enemies: [
+        { x: 250, y: 350, width: 40, height: 40, speed: 2.5, direction: 1, minX: 200, maxX: 350, alive: true },
+        { x: 500, y: 420, width: 40, height: 40, speed: 2, direction: -1, minX: 450, maxX: 600, alive: true },
+        { x: 750, y: 350, width: 40, height: 40, speed: 2.5, direction: 1, minX: 700, maxX: 850, alive: true },
+        { x: 1000, y: 420, width: 40, height: 40, speed: 2, direction: -1, minX: 950, maxX: 1100, alive: true },
+        { x: 1250, y: 350, width: 40, height: 40, speed: 2.5, direction: 1, minX: 1200, maxX: 1350, alive: true },
+        { x: 1600, y: 420, width: 40, height: 40, speed: 2, direction: -1, minX: 1550, maxX: 1700, alive: true },
+        { x: 1850, y: 350, width: 40, height: 40, speed: 2.5, direction: 1, minX: 1800, maxX: 1950, alive: true },
+        { x: 2100, y: 420, width: 40, height: 40, speed: 2, direction: -1, minX: 2050, maxX: 2200, alive: true },
+        { x: 2350, y: 350, width: 40, height: 40, speed: 2.5, direction: 1, minX: 2300, maxX: 2450, alive: true },
+        { x: 2700, y: 420, width: 40, height: 40, speed: 2, direction: -1, minX: 2650, maxX: 2800, alive: true },
+        { x: 3000, y: 350, width: 40, height: 40, speed: 2.5, direction: 1, minX: 2900, maxX: 3050, alive: true },
+        { x: 3450, y: 320, width: 40, height: 40, speed: 2, direction: -1, minX: 3400, maxX: 3550, alive: true },
+        { x: 950, y: 270, width: 40, height: 40, speed: 1.5, direction: 1, minX: 900, maxX: 1050, alive: true },
+        { x: 2050, y: 220, width: 40, height: 40, speed: 1.5, direction: -1, minX: 2000, maxX: 2150, alive: true }
+    ],
+    door: { x: 3900, y: 480, width: 50, height: 70 },
+    playerStart: { x: 50, y: 480 }
+};
+
 // Aktuální herní data
 let worldWidth = level1Data.worldWidth;
 let platforms = [...level1Data.platforms];
+let rocks = [...level1Data.rocks];
+let water = [...level1Data.water];
 let coins = JSON.parse(JSON.stringify(level1Data.coins));
 let enemies = JSON.parse(JSON.stringify(level1Data.enemies));
 let door = { ...level1Data.door };
@@ -259,9 +380,12 @@ function loseLife() {
         if (currentLevel === 1) {
             player.x = level1Data.playerStart.x;
             player.y = level1Data.playerStart.y;
-        } else {
+        } else if (currentLevel === 2) {
             player.x = level2Data.playerStart.x;
             player.y = level2Data.playerStart.y;
+        } else {
+            player.x = level3Data.playerStart.x;
+            player.y = level3Data.playerStart.y;
         }
         player.velocityX = 0;
         player.velocityY = 0;
@@ -291,6 +415,8 @@ function loadLevel(levelNum) {
     if (levelNum === 1) {
         worldWidth = level1Data.worldWidth;
         platforms = [...level1Data.platforms];
+        rocks = [...level1Data.rocks];
+        water = [...level1Data.water];
         coins = JSON.parse(JSON.stringify(level1Data.coins));
         enemies = JSON.parse(JSON.stringify(level1Data.enemies));
         door = { ...level1Data.door };
@@ -299,11 +425,23 @@ function loadLevel(levelNum) {
     } else if (levelNum === 2) {
         worldWidth = level2Data.worldWidth;
         platforms = [...level2Data.platforms];
+        rocks = [...level2Data.rocks];
+        water = [...level2Data.water];
         coins = JSON.parse(JSON.stringify(level2Data.coins));
         enemies = JSON.parse(JSON.stringify(level2Data.enemies));
         door = { ...level2Data.door };
         player.x = level2Data.playerStart.x;
         player.y = level2Data.playerStart.y;
+    } else if (levelNum === 3) {
+        worldWidth = level3Data.worldWidth;
+        platforms = [...level3Data.platforms];
+        rocks = [...level3Data.rocks];
+        water = [...level3Data.water];
+        coins = JSON.parse(JSON.stringify(level3Data.coins));
+        enemies = JSON.parse(JSON.stringify(level3Data.enemies));
+        door = { ...level3Data.door };
+        player.x = level3Data.playerStart.x;
+        player.y = level3Data.playerStart.y;
     }
     
     player.velocityX = 0;
@@ -324,15 +462,12 @@ function updateCamera() {
 
 // Funkce pro kreslení pozadí
 function drawBackground() {
-    // Kreslení opakujícího se pozadí
     const bgWidth = images.background.width;
     const bgHeight = images.background.height;
     
-    // Parallax efekt - pozadí se pohybuje pomaleji než kamera
     const parallaxX = camera.x * 0.5;
     const startX = Math.floor(parallaxX / bgWidth) * bgWidth - parallaxX;
     
-    // Kreslit pozadí opakovaně přes celou obrazovku
     for (let x = startX; x < canvas.width; x += bgWidth) {
         ctx.drawImage(images.background, x, 0, bgWidth, canvas.height);
     }
@@ -343,16 +478,13 @@ function drawPlayer() {
     const drawX = player.x - camera.x;
     const drawY = player.y;
     
-    // Blikání při nesmrtelnosti
     if (isInvincible && Math.floor(Date.now() / 100) % 2 === 0) {
         ctx.globalAlpha = 0.5;
     }
     
-    // Kreslení panáčka
     if (player.facingRight) {
         ctx.drawImage(images.player, drawX, drawY, player.width, player.height);
     } else {
-        // Zrcadlení pro pohyb doleva
         ctx.save();
         ctx.scale(-1, 1);
         ctx.drawImage(images.player, -drawX - player.width, drawY, player.width, player.height);
@@ -366,8 +498,6 @@ function drawPlayer() {
 function drawFireballs() {
     fireballs.forEach(fireball => {
         const drawX = fireball.x - camera.x;
-        
-        const time = Date.now() / 50;
         
         ctx.fillStyle = '#FFFF00';
         ctx.beginPath();
@@ -383,6 +513,62 @@ function drawFireballs() {
         ctx.beginPath();
         ctx.arc(drawX, fireball.y, fireball.width / 3, 0, Math.PI * 2);
         ctx.fill();
+    });
+}
+
+// Funkce pro kreslení kamenů
+function drawRocks() {
+    rocks.forEach(rock => {
+        const drawX = rock.x - camera.x;
+        
+        if (drawX + rock.width > 0 && drawX < canvas.width) {
+            // Šedý kámen
+            ctx.fillStyle = '#696969';
+            ctx.beginPath();
+            ctx.arc(drawX + rock.width / 2, rock.y + rock.height / 2, rock.width / 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Tmavší okraj
+            ctx.strokeStyle = '#404040';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(drawX + rock.width / 2, rock.y + rock.height / 2, rock.width / 2, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // Světlejší odlesk
+            ctx.fillStyle = '#909090';
+            ctx.beginPath();
+            ctx.arc(drawX + rock.width / 2 - 5, rock.y + rock.height / 2 - 5, 5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    });
+}
+
+// Funkce pro kreslení vody
+function drawWater() {
+    water.forEach(w => {
+        const drawX = w.x - camera.x;
+        
+        if (drawX + w.width > 0 && drawX < canvas.width) {
+            // Modrá voda
+            const gradient = ctx.createLinearGradient(drawX, w.y, drawX, w.y + w.height);
+            gradient.addColorStop(0, '#4169E1');
+            gradient.addColorStop(1, '#1E3A8A');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(drawX, w.y, w.width, w.height);
+            
+            // Vlnky
+            ctx.strokeStyle = '#87CEEB';
+            ctx.lineWidth = 2;
+            const waveTime = Date.now() / 500;
+            for (let i = 0; i < w.width; i += 20) {
+                ctx.beginPath();
+                ctx.moveTo(drawX + i, w.y + 5 + Math.sin(waveTime + i / 10) * 3);
+                ctx.lineTo(drawX + i + 10, w.y + 5 + Math.sin(waveTime + (i + 10) / 10) * 3);
+                ctx.stroke();
+            }
+        }
     });
 }
 
@@ -444,7 +630,6 @@ function drawEnemies() {
             const drawX = enemy.x - camera.x;
             
             if (drawX + enemy.width > 0 && drawX < canvas.width) {
-                // Kreslení nepřítele - zrcadlení podle směru pohybu
                 if (enemy.direction > 0) {
                     ctx.drawImage(images.enemy, drawX, enemy.y, enemy.width, enemy.height);
                 } else {
@@ -494,6 +679,24 @@ function checkCollision(rect1, rect2) {
            rect1.x + rect1.width > rect2.x &&
            rect1.y < rect2.y + rect2.height &&
            rect1.y + rect1.height > rect2.y;
+}
+
+// Kontrola kolize s kameny
+function checkRockCollision() {
+    rocks.forEach(rock => {
+        if (checkCollision(player, rock)) {
+            loseLife();
+        }
+    });
+}
+
+// Kontrola pádu do vody
+function checkWaterCollision() {
+    water.forEach(w => {
+        if (checkCollision(player, w)) {
+            loseLife();
+        }
+    });
 }
 
 // Aktualizace ohnivých koulí
@@ -610,7 +813,9 @@ function checkDoorEntry() {
         if (currentLevel === 1) {
             loadLevel(2);
         } else if (currentLevel === 2) {
-            alert('Gratuluju! Dokončil jsi hru! Celkové skóre: ' + score);
+            loadLevel(3);
+        } else if (currentLevel === 3) {
+            alert('🎉 GRATULUJU! Dokončil jsi všechny 3 levely! Celkové skóre: ' + score + ' 🏆');
             resetGame();
         }
     }
@@ -618,27 +823,25 @@ function checkDoorEntry() {
 
 // Hlavní herní smyčka
 function gameLoop() {
-    // Kreslení pozadí
     drawBackground();
     
-    // Aktualizace
     updatePlayer();
     updateCamera();
     updateEnemies();
     updateFireballs();
     checkCoinCollection();
+    checkRockCollision();
+    checkWaterCollision();
     checkDoorEntry();
     
-    // Kreslení
+    drawWater();
     drawPlatforms();
+    drawRocks();
     drawCoins();
     drawEnemies();
     drawDoor();
     drawFireballs();
     drawPlayer();
     
-    // Další snímek
     requestAnimationFrame(gameLoop);
 }
-
-// Hra se spustí automaticky po načtení obrázků
