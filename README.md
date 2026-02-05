@@ -37,13 +37,6 @@ Klasická skákačka ve stylu Mario s **SCROLLUJÍCÍ MAPOU**! Ovládáš červe
 2. Otevři soubor `index.html` ve svém prohlížeči
 3. Hraj!
 
-Můžeš také použít jednoduchý lokální server:
-
-```bash
-# Pokud máš Python 3
-python -m http.server 8000
-
-# Potom otevři http://localhost:8000 v prohlížeči
 ```
 
 ## 📁 Struktura projektu
