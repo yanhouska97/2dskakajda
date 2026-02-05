@@ -17,9 +17,13 @@ Klasická skákačka, kde ovládáš červenou postavičku, sbíráš žluté ž
 - ✅ Plynulý pohyb postavičky
 - ✅ Realistická gravitace a fyzika
 - ✅ Sbírání žetonek (každá za 10 bodů)
-- ✅ Několik platforem na přeskakování
+- ✅ **3 životy** - při kontaktu s nepřítelem ztratíš život!
+- ✅ **Nepřátelé** - fialové postavičky, které hlídají platformy
+- ✅ **2 levely** - druhý level je těžší!
+- ✅ **Dveře** - otevřou se až po sebrání všech žetonek
+- ✅ Nesmrtelnost po zásahu (2 sekundy blikání)
 - ✅ Animované žetonky
-- ✅ Počítadlo skóre
+- ✅ Počítadlo skóre a životů
 
 ## 🚀 Jak spustit
 
@@ -55,15 +59,17 @@ python -m http.server 8000
 
 Nápady na rozšíření:
 
-- [ ] Přidat nepřátele
-- [ ] Více levelů
-- [ ] Power-upy
+- [x] Přidat nepřátele ✅
+- [x] Více levelů ✅
+- [x] Životy hráče ✅
+- [ ] Více typů nepřátel
+- [ ] Power-upy (neviditelnost, rychlost)
 - [ ] Zvukové efekty
-- [ ] Animace postavičky
-- [ ] High score systém
+- [ ] Animace postavičky běhu
+- [ ] High score systém (localStorage)
 - [ ] Mobile ovládání (touch)
-- [ ] Časovač
-- [ ] Životy hráče
+- [ ] Časovač na level
+- [ ] Boss na konci
 
 ## 🤝 Přispívání
 

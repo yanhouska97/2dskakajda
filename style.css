@@ -29,6 +29,22 @@ body {
     margin-bottom: 5px;
 }
 
+.lives {
+    font-size: 18px;
+    margin: 8px 0;
+    color: #333;
+}
+
+#hearts {
+    font-size: 24px;
+}
+
+#levelInfo {
+    color: #333;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
 .score-board p {
     color: #666;
     font-size: 14px;
